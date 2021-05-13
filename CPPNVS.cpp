@@ -101,6 +101,13 @@ int NVS::get(std::string key, uint32_t& value) {
 	return ::nvs_get_u32(m_handle, key.c_str(), &value);
 } // get - uint32_t
 
+int NVS::get(std::string key, int32_t& value) {
+	return ::nvs_get_i32(m_handle, key.c_str(), &value);
+} // get - int32_t
+
+int NVS::get(std::string key, uint8_t& value) {
+	return ::nvs_get_u8(m_handle, key.c_str(), &value);
+} // get - int32_t
 
 int NVS::get(std::string key, uint8_t* result, size_t& length) {
 	ESP_LOGD(LOG_TAG, ">> get: key: %s, blob: inputSize: %d", key.c_str(), length);
@@ -136,6 +143,18 @@ void NVS::set(std::string key, uint32_t value) {
 	::nvs_set_u32(m_handle, key.c_str(), value);
 	ESP_LOGD(LOG_TAG, "<< set");
 } // set - uint32_t
+
+void NVS::set(std::string key, int32_t value) {
+	ESP_LOGD(LOG_TAG, ">> set: key: %s, i32: value=%d", key.c_str(), value);
+	::nvs_set_i32(m_handle, key.c_str(), value);
+	ESP_LOGD(LOG_TAG, "<< set");
+} // set - int32_t
+
+void NVS::set(std::string key, uint8_t value) {
+	ESP_LOGD(LOG_TAG, ">> set: key: %s, u8: value=%d", key.c_str(), value);
+	::nvs_set_u8(m_handle, key.c_str(), value);
+	ESP_LOGD(LOG_TAG, "<< set");
+} // set - uint8_t
 
 
 void NVS::set(std::string key, uint8_t* data, size_t length) {
