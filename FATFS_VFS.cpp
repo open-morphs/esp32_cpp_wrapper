@@ -42,10 +42,11 @@ FATFS_VFS::~FATFS_VFS() {
  * The FAT file system found in the partition is mounted into the VFS.
  * @return N/A.
  */
-void FATFS_VFS::mount() {
+void FATFS_VFS::mount(int allocation_unit_size) {
 	esp_vfs_fat_mount_config_t mountConfig;
 	mountConfig.max_files = m_maxFiles;
 	mountConfig.format_if_mount_failed = true;
+  mountConfig.allocation_unit_size = allocation_unit_size;
 	ESP_ERROR_CHECK(esp_vfs_fat_spiflash_mount(m_mountPath.c_str(), m_partitionName.c_str(), &mountConfig, &m_wl_handle));
 } // mount
 

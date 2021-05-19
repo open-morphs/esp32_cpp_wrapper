@@ -44,7 +44,7 @@ public:
 	FATFS_VFS(std::string mountPath, std::string partitionName);
 	virtual ~FATFS_VFS();
 
-	void mount();
+	void mount(int allocation_unit_size);
 	void setMaxFiles(int maxFiles);
 	void unmount();
 private:
