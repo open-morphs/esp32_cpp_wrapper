@@ -132,6 +132,17 @@ void SPI::transfer(uint8_t* data, size_t dataLen) {
 	}
 } // transmit
 
+void SPI::transfer2(uint8_t* txData, uint8_t* rxData, size_t dataLen) {
+	spi_transaction_t trans_desc;
+	//trans_desc.address   = 0;
+	//trans_desc.command   = 0;
+	trans_desc.flags     = 0;
+	trans_desc.length    = dataLen * 8;
+	trans_desc.rxlength  = 0;
+	trans_desc.tx_buffer = txData;
+	trans_desc.rx_buffer = rxData;
+} // transmit
+
 
 /**
  * @brief Send and receive a single byte.
