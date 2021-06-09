@@ -108,6 +108,36 @@ void SPI::setHost(spi_host_device_t host) {
  * @param [in] data A data buffer used to send and receive.
  * @param [in] dataLen The number of bytes to transmit and receive.
  */
+void SPI::transfer(uint8_t* txData, uint8_t* rxData, size_t dataLen) {
+	assert(txData != nullptr && rxData != nullptr);
+	assert(dataLen > 0);
+#ifdef DEBUG
+	for (auto i = 0; i < dataLen; i++) {
+		ESP_LOGD(LOG_TAG, "> %2d %.2x", i, data[i]);
+	}
+#endif
+	spi_transaction_t trans_desc;
+	//trans_desc.address   = 0;
+	//trans_desc.command   = 0;
+	trans_desc.flags     = 0;
+	trans_desc.length    = dataLen * 8;
+	trans_desc.rxlength  = 0;
+	trans_desc.tx_buffer = txData;
+	trans_desc.rx_buffer = rxData;
+
+	//ESP_LOGI(tag, "... Transferring");
+	esp_err_t rc = ::spi_device_transmit(m_handle, &trans_desc);
+	if (rc != ESP_OK) {
+		ESP_LOGE(LOG_TAG, "transfer:spi_device_transmit: %d", rc);
+	}
+} // transmit
+
+/**
+ * @brief Send and receive data through %SPI.  This is a blocking call.
+ *
+ * @param [in] data A data buffer used to send and receive.
+ * @param [in] dataLen The number of bytes to transmit and receive.
+ */
 void SPI::transfer(uint8_t* data, size_t dataLen) {
 	assert(data != nullptr);
 	assert(dataLen > 0);
@@ -130,17 +160,6 @@ void SPI::transfer(uint8_t* data, size_t dataLen) {
 	if (rc != ESP_OK) {
 		ESP_LOGE(LOG_TAG, "transfer:spi_device_transmit: %d", rc);
 	}
-} // transmit
-
-void SPI::transfer2(uint8_t* txData, uint8_t* rxData, size_t dataLen) {
-	spi_transaction_t trans_desc;
-	//trans_desc.address   = 0;
-	//trans_desc.command   = 0;
-	trans_desc.flags     = 0;
-	trans_desc.length    = dataLen * 8;
-	trans_desc.rxlength  = 0;
-	trans_desc.tx_buffer = txData;
-	trans_desc.rx_buffer = rxData;
 } // transmit
 
 

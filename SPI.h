@@ -23,7 +23,7 @@ public:
 		int csPin   = DEFAULT_CS_PIN);
 	void    setHost(spi_host_device_t host);
 	void    transfer(uint8_t* data, size_t dataLen);
-	void    transfer2(uint8_t* txData, uint8_t* rxData, size_t dataLen);
+	void    transfer(uint8_t* txData, uint8_t* rxData, size_t dataLen);
 	uint8_t transferByte(uint8_t value);
 
 	/**
