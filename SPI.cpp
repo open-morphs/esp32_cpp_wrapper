@@ -9,6 +9,7 @@
 #include <driver/spi_master.h>
 #include <esp_log.h>
 #include "sdkconfig.h"
+#include "string.h"
 
 //#define DEBUG 1
 
@@ -48,6 +49,7 @@ void SPI::init(int mosiPin, int misoPin, int clkPin, int csPin) {
 	ESP_LOGD(LOG_TAG, "init: mosi=%d, miso=%d, clk=%d, cs=%d", mosiPin, misoPin, clkPin, csPin);
 
 	spi_bus_config_t bus_config;
+	memset(&bus_config, 0, sizeof(spi_bus_config_t));
 	bus_config.sclk_io_num     = clkPin;  // CLK
 	bus_config.mosi_io_num     = mosiPin; // MOSI
 	bus_config.miso_io_num     = misoPin; // MISO
@@ -57,7 +59,6 @@ void SPI::init(int mosiPin, int misoPin, int clkPin, int csPin) {
     bus_config.flags           = (SPICOMMON_BUSFLAG_SCLK | SPICOMMON_BUSFLAG_MOSI | SPICOMMON_BUSFLAG_MISO);
 
 	ESP_LOGI(LOG_TAG, "... Initializing bus; host=%d", m_host);
-
 	esp_err_t errRc = ::spi_bus_initialize(
 			m_host,
 			&bus_config,
@@ -70,6 +71,7 @@ void SPI::init(int mosiPin, int misoPin, int clkPin, int csPin) {
 	}
 
 	spi_device_interface_config_t dev_config;
+	memset(&dev_config, 0, sizeof(spi_device_interface_config_t));
 	dev_config.address_bits     = 0;
 	dev_config.command_bits     = 0;
 	dev_config.dummy_bits       = 0;
@@ -117,6 +119,7 @@ void SPI::transfer(uint8_t* txData, uint8_t* rxData, size_t dataLen) {
 	}
 #endif
 	spi_transaction_t trans_desc;
+	memset(&trans_desc, 0, sizeof(spi_transaction_t));
 	//trans_desc.address   = 0;
 	//trans_desc.command   = 0;
 	trans_desc.flags     = 0;
