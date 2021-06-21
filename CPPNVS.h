@@ -26,6 +26,7 @@ public:
 	int get(std::string key, uint32_t& value);
 	int get(std::string key, int32_t& value);
 	int get(std::string key, uint8_t& value);
+	int get(std::string key, int8_t& value);
 	void set(std::string key, std::string data, bool isBlob = false);
 	void set(std::string key, uint32_t value);
 	void set(std::string key, int32_t value);

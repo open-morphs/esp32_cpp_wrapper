@@ -107,7 +107,11 @@ int NVS::get(std::string key, int32_t& value) {
 
 int NVS::get(std::string key, uint8_t& value) {
 	return ::nvs_get_u8(m_handle, key.c_str(), &value);
-} // get - int32_t
+} // get - uint8_t
+
+int NVS::get(std::string key, int8_t& value) {
+	return ::nvs_get_i8(m_handle, key.c_str(), &value);
+} // get - int8_t
 
 int NVS::get(std::string key, uint8_t* result, size_t& length) {
 	ESP_LOGD(LOG_TAG, ">> get: key: %s, blob: inputSize: %d", key.c_str(), length);
