@@ -564,6 +564,12 @@ void BLEDevice::startAdvertising() {
 	ESP_LOGD(LOG_TAG, "<< startAdvertising");
 } // startAdvertising
 
+void BLEDevice::stopAdvertising() {
+	ESP_LOGD(LOG_TAG, ">> stopAdvertising");
+	getAdvertising()->stop();
+	ESP_LOGD(LOG_TAG, "<< stopAdvertising");
+} // stopAdvertising
+
 /* multi connect support */
 /* requires a little more work */
 std::map<uint16_t, conn_status_t> BLEDevice::getPeerDevices(bool _client) {
