@@ -13,6 +13,7 @@
 #include "sdkconfig.h"
 #include <esp_log.h>
 #include "GeneralUtils.h"
+#include <cstring>
 
 static const char* LOG_TAG = "I2C";
 
@@ -103,12 +104,14 @@ void I2C::init(uint8_t address, gpio_num_t sdaPin, gpio_num_t sclPin, uint32_t c
 	m_address = address;
 
 	i2c_config_t conf;
+	memset(&conf, 0, sizeof(i2c_config_t));
 	conf.mode             = I2C_MODE_MASTER;
 	conf.sda_io_num       = sdaPin;
 	conf.scl_io_num       = sclPin;
 	conf.sda_pullup_en    = pullup ? GPIO_PULLUP_ENABLE : GPIO_PULLUP_DISABLE;
 	conf.scl_pullup_en    = pullup ? GPIO_PULLUP_ENABLE : GPIO_PULLUP_DISABLE;
-	conf.master.clk_speed =  clockSpeed;
+	conf.master.clk_speed = clockSpeed;
+	conf.clk_flags			 	= 0;
 	esp_err_t errRc = ::i2c_param_config(m_portNum, &conf);
 	if (errRc != ESP_OK) {
 		ESP_LOGE(LOG_TAG, "i2c_param_config: rc=%d %s", errRc, GeneralUtils::errorToString(errRc));
