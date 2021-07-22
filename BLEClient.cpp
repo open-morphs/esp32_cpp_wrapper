@@ -141,6 +141,39 @@ bool BLEClient::connect(BLEAddress address, esp_ble_addr_type_t type) {
 	return rc == ESP_GATT_OK;
 } // connect
 
+bool BLEClient::connect(BLEAddress address, esp_ble_addr_type_t type, const uint32_t timeoutMS) {
+
+	ESP_LOGD(LOG_TAG, ">> connect(%s)", address.toString().c_str());
+
+	clearServices();
+	m_peerAddress = address;
+
+	// Perform the open connection request against the target BLE Server.
+	m_semaphoreOpenEvt.take("connect");
+	esp_err_t errRc = ::esp_ble_gattc_open(
+		m_gattc_if,
+		*getPeerAddress().getNative(), // address
+		type,          // Note: This was added on 2018-04-03 when the latest ESP-IDF was detected to have changed the signature.
+		1                              // direct connection <-- maybe needs to be changed in case of direct indirect connection???
+	);
+	if (errRc != ESP_OK) {
+		ESP_LOGE(LOG_TAG, "esp_ble_gattc_open: rc=%d %s", errRc, GeneralUtils::errorToString(errRc));
+		return false;
+	}
+
+	bool semaphoreWasTaken{};
+	uint32_t rc{};
+	
+	std::tie(semaphoreWasTaken, rc) = m_semaphoreOpenEvt.wait(timeoutMS, "connect");   // Wait for the connection to complete.
+
+	if (!semaphoreWasTaken) {
+		printf("timeout reached!!!\r\n");
+		disconnect();
+	}
+
+	return (semaphoreWasTaken and rc == ESP_GATT_OK);
+}
+
 
 /**
  * @brief Disconnect from the peer.
@@ -151,6 +184,7 @@ void BLEClient::disconnect() {
 	// ESP_LOGW(__func__, "gattIf: %d, connId: %d", getGattcIf(), getConnId());
 	esp_err_t errRc = ::esp_ble_gattc_close(getGattcIf(), getConnId());
 	if (errRc != ESP_OK) {
+		printf("HERE!!!\r\n");
 		ESP_LOGE(LOG_TAG, "esp_ble_gattc_close: rc=%d %s", errRc, GeneralUtils::errorToString(errRc));
 		return;
 	}

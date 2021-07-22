@@ -35,6 +35,7 @@ public:
 
 	bool 									   connect(BLEAdvertisedDevice* device);
 	bool                                       connect(BLEAddress address, esp_ble_addr_type_t type = BLE_ADDR_TYPE_PUBLIC);   // Connect to the remote BLE Server
+	bool                                       connect(BLEAddress address, esp_ble_addr_type_t type, const uint32_t timeoutMS);   // Connect to the remote BLE Server
 	void                                       disconnect();                  // Disconnect from the remote BLE Server
 	BLEAddress                                 getPeerAddress();              // Get the address of the remote BLE Server
 	int                                        getRssi();                     // Get the RSSI of the remote BLE Server

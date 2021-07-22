@@ -40,7 +40,7 @@ public:
 		bool        take(uint32_t timeoutMs, std::string owner = "<Unknown>");
 		std::string toString();
 		uint32_t	wait(std::string owner = "<Unknown>");
-
+		std::pair<bool, uint32_t> wait(const uint32_t timeoutMs, const std::string& = "<Unknown>");
 	private:
 		SemaphoreHandle_t m_semaphore;
 		pthread_mutex_t   m_pthread_mutex;

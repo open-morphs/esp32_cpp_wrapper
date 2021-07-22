@@ -86,6 +86,37 @@ uint32_t FreeRTOS::Semaphore::wait(std::string owner) {
 	return m_value;
 } // wait
 
+/**
+ * @brief Wait for a semaphore to be released by trying to take it with timeout and
+ * then releasing it again.
+ * @param [in] timeoutMs A timeout for taking.
+ * @param [in] owner A debug tag.
+ * @return <bool, uint32_t> 1st value - semaphore was taken true/false, 2nd value - The value associated with the semaphore.
+ */
+std::pair<bool, uint32_t> FreeRTOS::Semaphore::wait(const uint32_t timeoutMs, const std::string& owner) {
+
+	ESP_LOGV(LOG_TAG, ">> wait: Semaphore waiting: %s for %s with timeout: %u", toString().c_str(), owner.c_str(), timeoutMs);
+	
+	m_owner = owner;
+
+	BaseType_t takeResult {};
+
+	if (m_usePthreads) {
+		pthread_mutex_lock(&m_pthread_mutex);
+	} else {
+		takeResult = xSemaphoreTake(m_semaphore, timeoutMs/portTICK_RATE_MS);
+	}
+
+	if (m_usePthreads) {
+		pthread_mutex_unlock(&m_pthread_mutex);
+	} else {
+		xSemaphoreGive(m_semaphore);
+	}
+
+	ESP_LOGV(LOG_TAG, "<< wait: Semaphore released: %s", toString().c_str());
+	return std::make_pair(takeResult, m_value);
+}
+
 
 FreeRTOS::Semaphore::Semaphore(std::string name) {
 	m_usePthreads = false;   	// Are we using pThreads or FreeRTOS?
